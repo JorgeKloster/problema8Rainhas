@@ -8,21 +8,21 @@ class Busca_A_estrela:
     def is_safe(self, state, row, col):
         # Cerifica conflitos com rainhas já colocadas
         for c in range(col):
-            if state[c] == row or abs(state[c] - row) == abs(c - col):  # Conflitos na diagonal
+            if state[c] == row or abs(state[c] - row) == abs(c - col):  # Conflitos na linha ou diagonal
                 return False
         return True
     
     def heuristic(self, state):
         # Calcula a heurística: Conta os conflitos naquele estado
         conflicts = 0
-        for col1 in range(len(state)):
+        for col1 in range(len(state)): # Verifica todas as colunas do estado atual
             if state[col1] == -1:  # Pula colunas não inicializadas
                 continue
-            for col2 in range(col1 + 1, len(state)):
+            for col2 in range(col1 + 1, len(state)): # Busca a próxima coluna para comparação
                 if state[col2] == -1:  # Pula colunas não inicializadas
                     continue
-                if state[col1] == state[col2]:  # COnflito na linha
-                    conflicts += 1
+                if state[col1] == state[col2]:  # Conflito na linha
+                    conflicts += 1 # Adiciona 1 no valor da heuristica daquele estado
                 if abs(state[col1] - state[col2]) == abs(col1 - col2):  # Conflito na diagonal
                     conflicts += 1
         return conflicts
@@ -32,6 +32,8 @@ class Busca_A_estrela:
         priority_list = []
         visited = set()
 
+        self.iteration_count = 0
+
         # Adiciona um estado inicial para a lista de prioridade
         initial_cost = self.heuristic(initial_state) + initial_state.count(-1)
         priority_list.append((initial_cost, 0, initial_state))  # (f(x), profundidade, estado)
@@ -39,6 +41,7 @@ class Busca_A_estrela:
         print(f"Iniciando A* com o estado inicial: {initial_state}")
 
         while priority_list:
+            self.iteration_count += 1
             # Classifique a lista por custo (f(x)) para simular o comportamento da fila prioritária
             priority_list.sort(key=lambda x: x[0])  # Classifica por f(x)
             f_cost, depth, current_state = priority_list.pop(0)  # Pega o estado com o menor f(x)
@@ -54,6 +57,7 @@ class Busca_A_estrela:
             if current_state.count(-1) == 0 and self.heuristic(current_state) == 0:
                 self.solution = current_state
                 print(f"Solução encontrada: {self.solution}")
+                print(f"Número de iterações: {self.iteration_count}")
                 return True
 
             # Expande o estado atual para encontrar a próxima coluna vazia

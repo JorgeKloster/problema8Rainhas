@@ -9,7 +9,7 @@ class Busca_largura:
         for c in range(8):
             if state[c] == -1: # Pula coluna não inicalizada
                 continue
-            if state[c] == row or abs(state[c] - row) == abs(c - col):
+            if state[c] == row or abs(state[c] - row) == abs(c - col): # Conflitos na linha ou diagonal
                 print(f"Conflito encontrado da rainha em ({col}, {row}) com a ({c}, {state[c]})")
                 return False
         return True
@@ -21,14 +21,14 @@ class Busca_largura:
         visited = set()  # Guarda todos os estados já visitados
 
         #Adicionado contador de iterações pois a execução travava e suspeitei que fosse um loop, assim posso colocar limite de iterações
-        iteration_count = 0
+        self.iteration_count = 0
         max_iterations = 1000  # Coloca um limite de iterações
 
         print(f"Iniciando a Busca em Largura com a fila: {queue}")
 
         while queue:
-            iteration_count += 1
-            if iteration_count > max_iterations:
+            self.iteration_count += 1
+            if self.iteration_count > max_iterations:
                 print("Atingido limite de iterações. Parada a busca para eviar loop infinito.")
                 return False
             
@@ -45,9 +45,10 @@ class Busca_largura:
             if len([pos for pos in current_state if pos != -1]) == 8:
                 self.solution = current_state
                 print(f"Solução encontrada: {self.solution}")
+                print(f"Número de iterações: {self.iteration_count}")
                 return True
 
-            # Exxpande o estado atual procurando a próxima coluna
+            # Expande o estado atual procurando a próxima coluna
             try:
                 col = current_state.index(-1)  # Procura a próxima coluna não inicializada
             except ValueError:
